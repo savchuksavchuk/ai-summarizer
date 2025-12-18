@@ -52,9 +52,11 @@ export class SummarizeFileProcessor extends WorkerHost {
       pagesCount,
     );
 
+    const preview = summary.slice(0, 300);
+
     await this.summaryModel.updateOne(
       { _id: new Types.ObjectId(summaryId) },
-      { summaryText: summary },
+      { summaryText: summary, previewText: preview },
     );
 
     this.logger.log(

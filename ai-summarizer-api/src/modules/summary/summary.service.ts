@@ -7,6 +7,8 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { FILES_TO_PARSE_QUEUE } from './constants/queue.constants';
 import { Queue } from 'bullmq';
 import { JOB_TO_PARSE_FILE } from './constants/job.constants';
+import { SummaryDto } from './dtos/summary.dto';
+import { SummaryPreviewDto } from './dtos/summary-preview.dto';
 
 @Injectable()
 export class SummaryService {
@@ -40,4 +42,20 @@ export class SummaryService {
       fileName,
     });
   };
+
+  async getSummaryList(): Promise<SummaryPreviewDto[]> {
+    const summaryRecords = await this.summaryModel
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean();
+
+    return summaryRecords.map((summary) => new SummaryPreviewDto(summary));
+  }
+
+  async getSummaryById(summaryId: string): Promise<SummaryDto> {
+    const summaryRecord = await this.summaryModel.findById(summaryId).lean();
+
+    return new SummaryDto(summaryRecord);
+  }
 }

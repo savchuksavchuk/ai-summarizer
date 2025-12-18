@@ -39,6 +39,7 @@ services:
       MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
       REDIS_URI: redis://:redispass@redis:6379
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      CORS_ORIGINS: http://localhost:3000
     volumes:
       - uploads-data:/app/uploads
     depends_on:

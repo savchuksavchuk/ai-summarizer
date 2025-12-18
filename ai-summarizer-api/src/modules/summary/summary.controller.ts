@@ -1,5 +1,7 @@
 import {
   Controller,
+  Get,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -24,5 +26,15 @@ export class SummaryController {
     file: Express.Multer.File,
   ) {
     return this.summarizerService.summarizeFile(file);
+  }
+
+  @Get('latest')
+  async getLatest() {
+    return this.summarizerService.getSummaryList();
+  }
+
+  @Get(':id')
+  async getById(@Param('id') id: string) {
+    return this.summarizerService.getSummaryById(id);
   }
 }
