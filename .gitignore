@@ -41,6 +41,7 @@ pids
 *.pid
 *.pid.lock
 *.seed
+**/uploads
 
 # Lerna / PNPM / Yarn
 pnpm-lock.yaml

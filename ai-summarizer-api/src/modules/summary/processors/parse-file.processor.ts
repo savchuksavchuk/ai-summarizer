@@ -63,7 +63,7 @@ export class ParseFileProcessor extends WorkerHost {
     let batchJobs: { name: string; data: SummarizePageTextJobData }[] = [];
 
     for (let pageNum = 1; pageNum <= pagesCount; pageNum++) {
-      const pageText = await this.pdfService.extractTextByPage(
+      const pageText = await this.pdfService.extractContentByPage(
         pdfDocument,
         pageNum,
       );
