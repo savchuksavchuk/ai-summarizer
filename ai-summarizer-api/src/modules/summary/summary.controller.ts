@@ -22,7 +22,7 @@ export class SummaryController {
       }),
     )
     file: Express.Multer.File,
-  ): Promise<string> {
+  ) {
     return this.summarizerService.summarizeFile(file);
   }
 }

@@ -1,9 +1,8 @@
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
 import {
   FILES_TO_PARSE_QUEUE,
-  TEXT_TO_SUMMARIZE_QUEUE,
+  PAGE_TO_SUMMARIZE_QUEUE,
 } from '../constants/queue.constants';
-import { Logger } from '@nestjs/common';
 import { FileStorageService } from 'src/common/file-storage/file-storage.service';
 import { PdfService } from 'src/common/pdf/pdf.service';
 import { Job, Queue } from 'bullmq';
@@ -14,15 +13,18 @@ import {
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ParseFileJobData, SummarizePageTextJobData } from '../types/job.types';
+import { SummaryModel } from '../orm-models/summary.orm-model';
 
-@Processor(FILES_TO_PARSE_QUEUE, { concurrency: 10 })
+@Processor(FILES_TO_PARSE_QUEUE)
 export class ParseFileProcessor extends WorkerHost {
   private readonly BATCH_SIZE = 20;
 
   constructor(
     private readonly fileStorageService: FileStorageService,
     private readonly pdfService: PdfService,
-    @InjectQueue(TEXT_TO_SUMMARIZE_QUEUE) private queue: Queue,
+    @InjectQueue(PAGE_TO_SUMMARIZE_QUEUE) private queue: Queue,
+    @InjectModel(SummaryModel.name)
+    private readonly summaryModel: Model<SummaryModel>,
     @InjectModel(SummaryPageModel.name)
     private readonly summaryPageModel: Model<SummaryPageModel>,
   ) {
@@ -36,6 +38,11 @@ export class ParseFileProcessor extends WorkerHost {
 
     const { pdfDocument, pagesCount } = await this.pdfService.getPagesCount(
       new Uint8Array(fileBuffer),
+    );
+
+    await this.summaryModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(summaryId) },
+      { pagesLeft: pagesCount },
     );
 
     await this.processPagesInBatches(
@@ -69,7 +76,7 @@ export class ParseFileProcessor extends WorkerHost {
       });
 
       batchJobs.push({
-        name: 'summarize-page',
+        name: PAGE_TO_SUMMARIZE_QUEUE,
         data: {
           summaryId,
           pageNumber: pageNum,

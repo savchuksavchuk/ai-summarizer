@@ -8,17 +8,15 @@ import { BullModule } from '@nestjs/bullmq';
 import { ParseFileProcessor } from './processors/parse-file.processor';
 import {
   FILES_TO_PARSE_QUEUE,
-  FILES_TO_SUMMARIZE_QUEUE,
-  TEXT_TO_SUMMARIZE_QUEUE,
+  PAGE_TO_SUMMARIZE_QUEUE,
+  SUMMARY_FINISH_QUEUE,
 } from './constants/queue.constants';
 import { PdfService } from 'src/common/pdf/pdf.service';
 import {
   SummaryPageModel,
   SummaryPageSchema,
 } from './orm-models/summary-page.orm-model';
-import { SummarizeTextProcessor } from './processors/page-summarize.processor';
-import { AiSummaryService } from 'src/common/ai-summarize/ai-summary.service';
-import { SummarizeFileProcessor } from './processors/file-summarize.processor';
+import { SummaryFinishProcessor } from './processors/summary-finish.processor';
 
 @Module({
   imports: [
@@ -30,10 +28,10 @@ import { SummarizeFileProcessor } from './processors/file-summarize.processor';
       name: FILES_TO_PARSE_QUEUE,
     }),
     BullModule.registerQueue({
-      name: TEXT_TO_SUMMARIZE_QUEUE,
+      name: PAGE_TO_SUMMARIZE_QUEUE,
     }),
     BullModule.registerQueue({
-      name: FILES_TO_SUMMARIZE_QUEUE,
+      name: SUMMARY_FINISH_QUEUE,
     }),
   ],
   controllers: [SummaryController],
@@ -41,9 +39,7 @@ import { SummarizeFileProcessor } from './processors/file-summarize.processor';
     SummaryService,
     FileStorageService,
     ParseFileProcessor,
-    AiSummaryService,
-    SummarizeTextProcessor,
-    SummarizeFileProcessor,
+    SummaryFinishProcessor,
     PdfService,
   ],
 })

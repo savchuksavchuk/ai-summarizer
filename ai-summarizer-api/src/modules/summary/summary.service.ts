@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { InjectQueue } from '@nestjs/bullmq';
 import { FILES_TO_PARSE_QUEUE } from './constants/queue.constants';
 import { Queue } from 'bullmq';
+import { JOB_TO_PARSE_FILE } from './constants/job.constants';
 
 @Injectable()
 export class SummaryService {
@@ -16,13 +17,11 @@ export class SummaryService {
     @InjectQueue(FILES_TO_PARSE_QUEUE) private queue: Queue,
   ) {}
 
-  async summarizeFile(file: Express.Multer.File): Promise<string> {
+  async summarizeFile(file: Express.Multer.File) {
     const fileName = await this.fileStorageService.saveFile(file);
     const summaryRecord = await this.createInitialSummaryRecord();
 
     await this.enqueueFileForParsing(summaryRecord._id.toString(), fileName);
-
-    return 'This is a summarized text.';
   }
 
   private readonly createInitialSummaryRecord =
@@ -36,7 +35,7 @@ export class SummaryService {
     summaryId: string,
     fileName: string,
   ): Promise<void> => {
-    await this.queue.add('parse-file-job', {
+    await this.queue.add(JOB_TO_PARSE_FILE, {
       summaryId,
       fileName,
     });

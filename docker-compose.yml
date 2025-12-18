@@ -1,0 +1,142 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: mongopass
+      MONGO_INITDB_DATABASE: ai_summarizer
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - ai-summarizer-network
+
+  redis:
+    image: redis:8.2
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--requirepass", "redispass"]
+    volumes:
+      - redis-data:/data
+    networks:
+      - ai-summarizer-network
+
+  ai-summarizer-api:
+    build:
+      context: ./ai-summarizer-api
+      dockerfile: Dockerfile
+    container_name: ai-summarizer-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
+      REDIS_URI: redis://:redispass@redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - uploads-data:/app/uploads
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - ai-summarizer-network
+
+  ai-summarize-service-1:
+    build:
+      context: ./ai-summarize-service
+      dockerfile: Dockerfile
+    container_name: ai-summarize-service-1
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
+      REDIS_URI: redis://:redispass@redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - mongo
+      - redis
+      - ai-summarizer-api
+    networks:
+      - ai-summarizer-network
+
+  ai-summarize-service-2:
+    build:
+      context: ./ai-summarize-service
+      dockerfile: Dockerfile
+    container_name: ai-summarize-service-2
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
+      REDIS_URI: redis://:redispass@redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - mongo
+      - redis
+      - ai-summarizer-api
+    networks:
+      - ai-summarizer-network
+
+  ai-summarize-service-3:
+    build:
+      context: ./ai-summarize-service
+      dockerfile: Dockerfile
+    container_name: ai-summarize-service-3
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
+      REDIS_URI: redis://:redispass@redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - mongo
+      - redis
+      - ai-summarizer-api
+    networks:
+      - ai-summarizer-network
+
+  ai-summarize-service-4:
+    build:
+      context: ./ai-summarize-service
+      dockerfile: Dockerfile
+    container_name: ai-summarize-service-4
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
+      REDIS_URI: redis://:redispass@redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - mongo
+      - redis
+      - ai-summarizer-api
+    networks:
+      - ai-summarizer-network
+
+  ai-summarize-service-5:
+    build:
+      context: ./ai-summarize-service
+      dockerfile: Dockerfile
+    container_name: ai-summarize-service-5
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
+      REDIS_URI: redis://:redispass@redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - mongo
+      - redis
+      - ai-summarizer-api
+    networks:
+      - ai-summarizer-network
+
+networks:
+  ai-summarizer-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  redis-data:
+  uploads-data:
