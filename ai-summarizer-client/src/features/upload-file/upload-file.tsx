@@ -44,6 +44,7 @@ export const UploadFile = () => {
         type="file"
         className="hidden"
         ref={inputRef}
+        accept="application/pdf"
         onChange={(e) => {
           const file = e.target.files?.[0];
           if (!file) return;
