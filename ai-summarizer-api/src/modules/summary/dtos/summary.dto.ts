@@ -6,7 +6,6 @@ export class SummaryDto {
   status: string;
   executionTimeInSeconds: number;
   summaryText: string;
-  previewText: string;
 
   constructor(entity: ISummaryModel) {
     this._id =
@@ -15,6 +14,5 @@ export class SummaryDto {
     this.status = entity.status;
     this.executionTimeInSeconds = entity.executionTimeInSeconds;
     this.summaryText = entity.summaryText;
-    this.previewText = entity.previewText;
   }
 }

@@ -1,5 +1,5 @@
 import { config } from "@/src/shared/utils";
-import { Summary, SummaryPreviewItem } from "./types";
+import { Summary } from "./types";
 
 export class SummaryApi {
   static async summarize(file: File): Promise<void> {
@@ -12,7 +12,7 @@ export class SummaryApi {
     });
   }
 
-  static async getLatest(): Promise<SummaryPreviewItem[]> {
+  static async getLatest(): Promise<Summary[]> {
     const response = await fetch(`${config.apiBaseUrl}/summary/latest`, {
       method: "GET",
     });

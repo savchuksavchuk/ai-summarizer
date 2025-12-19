@@ -4,7 +4,6 @@ import { Document, Types } from 'mongoose';
 export interface ISummaryModel {
   _id: string | Types.ObjectId;
   summaryText: string;
-  previewText: string;
   pagesLeft: number;
   status: 'pending' | 'completed' | 'failed';
   executionTimeInSeconds: number;
@@ -25,13 +24,6 @@ export class SummaryModel extends Document implements ISummaryModel {
     default: '',
   })
   summaryText: string;
-
-  @Prop({
-    type: String,
-    required: false,
-    default: '',
-  })
-  previewText: string;
 
   @Prop({
     type: Number,

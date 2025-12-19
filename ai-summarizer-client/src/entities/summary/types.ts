@@ -5,10 +5,4 @@ export type Summary = {
   status: SummaryStatus;
   executionTimeInSeconds: number;
   summaryText: string;
-  previewText: string;
 };
-
-export type SummaryPreviewItem = Pick<
-  Summary,
-  "_id" | "status" | "previewText"
->;

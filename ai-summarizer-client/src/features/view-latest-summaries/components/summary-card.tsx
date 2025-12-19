@@ -1,4 +1,4 @@
-import { SummaryPreviewItem } from "@/src/entities";
+import { Summary } from "@/src/entities";
 import {
   Button,
   Item,
@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { FC } from "react";
 
 type Props = {
-  summary: SummaryPreviewItem;
+  summary: Summary;
 };
 
 export const SummaryCard: FC<Props> = ({ summary }) => {
@@ -24,7 +24,7 @@ export const SummaryCard: FC<Props> = ({ summary }) => {
             <Skeleton className="w-3/4 h-4 mt-1" />
           </div>
         ) : (
-          <ItemDescription>{summary.previewText}</ItemDescription>
+          <ItemDescription>{summary.summaryText}</ItemDescription>
         )}
       </ItemContent>
       <ItemActions>

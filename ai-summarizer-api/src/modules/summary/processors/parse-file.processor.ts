@@ -14,6 +14,7 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ParseFileJobData, SummarizePageTextJobData } from '../types/job.types';
 import { SummaryModel } from '../orm-models/summary.orm-model';
+import { JOB_TO_SUMMARIZE_PAGE } from '../constants/job.constants';
 
 @Processor(FILES_TO_PARSE_QUEUE)
 export class ParseFileProcessor extends WorkerHost {
@@ -76,7 +77,7 @@ export class ParseFileProcessor extends WorkerHost {
       });
 
       batchJobs.push({
-        name: PAGE_TO_SUMMARIZE_QUEUE,
+        name: JOB_TO_SUMMARIZE_PAGE,
         data: {
           summaryId,
           pageNumber: pageNum,
