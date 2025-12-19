@@ -1,4 +1,4 @@
-FROM node:20-slim
+FROM node:20
 
 WORKDIR /app
 
@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
     libgif-dev \
     librsvg2-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Increase Node.js memory limit for OCR processing
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 COPY package*.json ./
 
