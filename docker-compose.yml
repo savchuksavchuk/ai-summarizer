@@ -39,7 +39,7 @@ services:
       MONGODB_URI: mongodb://mongouser:mongopass@mongo:27017/ai_summarizer?authSource=admin
       REDIS_URI: redis://:redispass@redis:6379
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-      CORS_ORIGINS: http://localhost:3000
+      CORS_ORIGINS: http://localhost:3001
     volumes:
       - uploads-data:/app/uploads
     depends_on:
@@ -129,6 +129,21 @@ services:
     depends_on:
       - mongo
       - redis
+      - ai-summarizer-api
+    networks:
+      - ai-summarizer-network
+
+  ai-summarizer-client:
+    build:
+      context: ./ai-summarizer-client
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:3000
+    container_name: ai-summarizer-client
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    depends_on:
       - ai-summarizer-api
     networks:
       - ai-summarizer-network
