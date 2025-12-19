@@ -1,13 +1,15 @@
+"use client";
+
 import { Summary } from "@/src/entities";
 import {
   Button,
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+  Skeleton,
 } from "@/src/shared";
-import { Skeleton } from "@/src/shared/ui/skeleton";
-import { Loader2 } from "lucide-react";
+
+import { ChevronsUpDown, Loader2 } from "lucide-react";
 import { FC } from "react";
 
 type Props = {
@@ -16,26 +18,36 @@ type Props = {
 
 export const SummaryCard: FC<Props> = ({ summary }) => {
   return (
-    <Item variant="outline">
-      <ItemContent>
-        {summary.status === "pending" ? (
-          <div className="flex flex-col gap-1">
-            <Skeleton className="w-full h-4" />
-            <Skeleton className="w-3/4 h-4 mt-1" />
-          </div>
-        ) : (
-          <ItemDescription>{summary.summaryText}</ItemDescription>
-        )}
-      </ItemContent>
-      <ItemActions>
-        {summary.status === "completed" ? (
-          <Button variant="outline" size="sm">
-            View
-          </Button>
-        ) : summary.status === "pending" ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : null}
-      </ItemActions>
-    </Item>
+    <div className="border rounded-md w-full">
+      <Collapsible defaultOpen={false} className="flex flex-col w-full">
+        <div className="flex items-center justify-between px-4 py-2 border-b">
+          {summary.status === "completed" ? (
+            <div className="font-semibold text-sm overflow-hidden line-clamp-2">
+              {summary.summaryText.slice(0, 100)}
+            </div>
+          ) : (
+            <Skeleton className="w-3/4 h-5" />
+          )}
+
+          {summary.status === "completed" && (
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <ChevronsUpDown className="transition-transform duration-200 data-[state=open]:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+          )}
+
+          {summary.status === "pending" && (
+            <Button variant="ghost" size="icon" disabled>
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </Button>
+          )}
+        </div>
+
+        <CollapsibleContent className="px-4 py-2 text-sm whitespace-pre-wrap">
+          {summary.summaryText}
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   );
 };

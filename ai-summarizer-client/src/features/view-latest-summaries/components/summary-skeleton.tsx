@@ -1,5 +1,5 @@
-import { Skeleton } from "@/src/shared/ui/skeleton";
+import { Skeleton } from "@/src/shared";
 
 export const SummarySkeleton = () => {
-  return <Skeleton className="w-full h-19" />;
+  return <Skeleton className="w-full h-[53px]" />;
 };
